@@ -1,0 +1,133 @@
+[gd_scene load_steps=10 format=3 uid="uid://bppthab71l7jv"]
+
+[ext_resource type="Script" path="res://enemies/snowball.gd" id="1_5btbg"]
+[ext_resource type="Texture2D" uid="uid://or51slka2b5u" path="res://assets/enemies/snowball.png" id="1_hio2b"]
+
+[sub_resource type="Animation" id="Animation_v251d"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SnowBALLS:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_fmwj4"]
+resource_name = "aggro"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SnowBALLS:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_3gin6"]
+resource_name = "idle"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SnowBALLS:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [4, 5, 6, 7]
+}
+
+[sub_resource type="Animation" id="Animation_b2qi7"]
+resource_name = "notice"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SnowBALLS:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [8, 9, 10, 11, 12]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_j4fph"]
+_data = {
+"RESET": SubResource("Animation_v251d"),
+"aggro": SubResource("Animation_fmwj4"),
+"idle": SubResource("Animation_3gin6"),
+"notice": SubResource("Animation_b2qi7")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_r70no"]
+radius = 7.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1e1su"]
+radius = 5.0
+height = 15.0
+
+[node name="snowball" type="CharacterBody2D" groups=["enemy"]]
+collision_layer = 8
+script = ExtResource("1_5btbg")
+jump_time_to_peak = 0.4
+jump_time_to_descent = 0.3
+
+[node name="SnowBALLS" type="Sprite2D" parent="."]
+texture = ExtResource("1_hio2b")
+hframes = 4
+vframes = 4
+frame = 1
+metadata/_aseprite_wizard_config_ = {
+"keep_anim_length": false,
+"layer": "",
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"op_exp": false,
+"player": "AnimationPlayer",
+"source": "res://assets/enemies/snowball.aseprite"
+}
+
+[node name="PlayerScan" type="RayCast2D" parent="SnowBALLS"]
+target_position = Vector2(-100, 0)
+collision_mask = 5
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_j4fph")
+}
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("CircleShape2D_r70no")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-0.5, -0.5)
+rotation = -1.57079
+shape = SubResource("CapsuleShape2D_1e1su")
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

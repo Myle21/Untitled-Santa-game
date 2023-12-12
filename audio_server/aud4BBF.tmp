@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bgkqqoc4cuv63"]
+
+[ext_resource type="Script" path="res://audio_server/audio_server.gd" id="1_5fq2p"]
+[ext_resource type="AudioStream" uid="uid://db5gvcncaeghe" path="res://audio_server/music/xDeviruchi - Take some rest and eat some food!.wav" id="1_ska4q"]
+
+[node name="AudioServer" type="Node"]
+script = ExtResource("1_5fq2p")
+volume = null
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_ska4q")
+volume_db = -10.0
+autoplay = true

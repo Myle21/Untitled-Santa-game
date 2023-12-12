@@ -1,0 +1,117 @@
+[gd_scene load_steps=15 format=3 uid="uid://dabt5nsbp35u0"]
+
+[ext_resource type="PackedScene" uid="uid://bk2uhsij51ka4" path="res://worlds/house.tscn" id="1_gmx5i"]
+[ext_resource type="Script" path="res://world_controller.gd" id="1_t4mq2"]
+[ext_resource type="PackedScene" uid="uid://bxoa6wci1ka8h" path="res://player/player.tscn" id="2_fu4x4"]
+[ext_resource type="PackedScene" uid="uid://bgkqqoc4cuv63" path="res://audio_server/audio_server.tscn" id="2_x6rww"]
+[ext_resource type="Texture2D" uid="uid://cr856nptybvke" path="res://assets/Player/health.png" id="8_2r85u"]
+[ext_resource type="PackedScene" uid="uid://bdpgppcskboiw" path="res://player/death_screen.tscn" id="8_56jrp"]
+[ext_resource type="FontFile" uid="uid://duabnwf0f6xk5" path="res://assets/fonts/Silver.ttf" id="8_f6yb4"]
+[ext_resource type="Shader" path="res://outline.gdshader" id="9_kfjb2"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sqyms"]
+
+[sub_resource type="Sky" id="Sky_iml37"]
+sky_material = SubResource("ProceduralSkyMaterial_sqyms")
+
+[sub_resource type="Environment" id="Environment_fy4bg"]
+background_mode = 3
+sky = SubResource("Sky_iml37")
+ambient_light_source = 1
+ambient_light_color = Color(0, 0.541176, 0.705882, 1)
+ambient_light_energy = 16.0
+reflected_light_source = 1
+tonemap_mode = 3
+tonemap_exposure = 0.9
+tonemap_white = 2.0
+sdfgi_use_occlusion = true
+glow_enabled = true
+glow_bloom = 0.3
+glow_hdr_threshold = 0.5
+fog_light_energy = 0.0
+fog_density = 1.494
+adjustment_enabled = true
+adjustment_brightness = 1.05
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_i72gc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rv84y"]
+font = ExtResource("8_f6yb4")
+outline_size = 1
+outline_color = Color(1, 0.901961, 0.901961, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m55vs"]
+shader = ExtResource("9_kfjb2")
+shader_parameter/color = Color(1, 0.901961, 0.901961, 1)
+shader_parameter/width = 1.0
+shader_parameter/pattern = 0
+shader_parameter/inside = false
+shader_parameter/add_margins = true
+
+[node name="World_controller" type="Node2D"]
+script = ExtResource("1_t4mq2")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_fy4bg")
+
+[node name="AudioServer" parent="." instance=ExtResource("2_x6rww")]
+volume = -20.0
+
+[node name="World1" parent="." instance=ExtResource("1_gmx5i")]
+
+[node name="Player" parent="." instance=ExtResource("2_fu4x4")]
+position = Vector2(52, 154)
+jump_height = 50.0
+jump_time_to_peak = 0.5
+jump_time_to_descent = 0.4
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(68, 229)
+shape = SubResource("WorldBoundaryShape2D_i72gc")
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 19.0
+grow_horizontal = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="UI/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 1
+
+[node name="Presents count" type="Label" parent="UI/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Presents: 0"
+label_settings = SubResource("LabelSettings_rv84y")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 2
+
+[node name="Label" type="Label" parent="UI/HBoxContainer/MarginContainer"]
+layout_mode = 2
+text = "x3"
+label_settings = SubResource("LabelSettings_rv84y")
+
+[node name="Sprite2D" type="Sprite2D" parent="UI/HBoxContainer/MarginContainer"]
+material = SubResource("ShaderMaterial_m55vs")
+position = Vector2(-14, 12)
+texture = ExtResource("8_2r85u")
+
+[node name="Control" parent="." instance=ExtResource("8_56jrp")]
+visible = false
+
+[connection signal="dead" from="Player" to="." method="_on_player_dead"]
+[connection signal="won" from="Player" to="." method="_on_player_won"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

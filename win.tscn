@@ -1,0 +1,58 @@
+[gd_scene load_steps=5 format=3 uid="uid://kpjm6plhc018"]
+
+[ext_resource type="Shader" path="res://assets/shaders/blur.gdshader" id="1_ew8e8"]
+[ext_resource type="FontFile" uid="uid://duabnwf0f6xk5" path="res://assets/fonts/Silver.ttf" id="1_gqo7d"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cpsiy"]
+shader = ExtResource("1_ew8e8")
+shader_parameter/blur_type = 1
+shader_parameter/blur_amount = 16
+shader_parameter/blur_radius = 1.0
+shader_parameter/blur_direction = Vector2(1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_rv84y"]
+font = ExtResource("1_gqo7d")
+outline_size = 1
+outline_color = Color(1, 0.901961, 0.901961, 1)
+
+[node name="CanvasLayer" type="CanvasLayer"]
+
+[node name="Control" type="Control" parent="."]
+top_level = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect2" type="ColorRect" parent="Control"]
+material = SubResource("ShaderMaterial_cpsiy")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+alignment = 1
+
+[node name="Label" type="Label" parent="Control/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "You won!"
+label_settings = SubResource("LabelSettings_rv84y")

@@ -1,0 +1,94 @@
+[gd_scene load_steps=10 format=3 uid="uid://savgiq04ok2j"]
+
+[ext_resource type="Script" path="res://entities/cloud.gd" id="1_cttd7"]
+[ext_resource type="Texture2D" uid="uid://qkmhb3omrliu" path="res://assets/nature/cloud.png" id="1_e0g83"]
+[ext_resource type="Shader" path="res://outline.gdshader" id="1_j3o1p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s20n8"]
+size = Vector2(32, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2uqcs"]
+size = Vector2(30, 10.3501)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_630hi"]
+shader = ExtResource("1_j3o1p")
+shader_parameter/color = Color(0.741176, 0.741176, 0.741176, 1)
+shader_parameter/width = 1.0
+shader_parameter/pattern = 0
+shader_parameter/inside = true
+shader_parameter/add_margins = true
+
+[sub_resource type="Animation" id="Animation_jaoli"]
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CollisionShape2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_3vr66"]
+resource_name = "float"
+length = 0.5
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CollisionShape2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -2)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gl86p"]
+_data = {
+"RESET": SubResource("Animation_jaoli"),
+"float": SubResource("Animation_3vr66")
+}
+
+[node name="Cloud" type="AnimatableBody2D"]
+script = ExtResource("1_cttd7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_s20n8")
+
+[node name="Area2D" type="Area2D" parent="CollisionShape2D"]
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionShape2D/Area2D"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_2uqcs")
+
+[node name="Cloud" type="Sprite2D" parent="CollisionShape2D"]
+material = SubResource("ShaderMaterial_630hi")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_e0g83")
+offset = Vector2(0, -16)
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="CollisionShape2D"]
+scale = Vector2(1.6, 0.6)
+enable_node_path = NodePath("../..")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_gl86p")
+}
+autoplay = "float"
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="body_entered" from="CollisionShape2D/Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="CollisionShape2D/Area2D" to="." method="_on_area_2d_body_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -1,0 +1,77 @@
+[gd_scene load_steps=7 format=3 uid="uid://bdpgppcskboiw"]
+
+[ext_resource type="Shader" path="res://assets/shaders/blur.gdshader" id="1_q5dnf"]
+[ext_resource type="Texture2D" uid="uid://76gujdg6rrj1" path="res://assets/fonts/ui.png" id="2_ykksq"]
+[ext_resource type="FontFile" uid="uid://duabnwf0f6xk5" path="res://assets/fonts/Silver.ttf" id="3_or2g7"]
+[ext_resource type="Script" path="res://player/Button.gd" id="3_p6ccl"]
+[ext_resource type="Texture2D" uid="uid://cr856nptybvke" path="res://assets/Player/health.png" id="4_h6s0r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3drft"]
+shader = ExtResource("1_q5dnf")
+shader_parameter/blur_type = 1
+shader_parameter/blur_amount = 16
+shader_parameter/blur_radius = 1.0
+shader_parameter/blur_direction = Vector2(1, 1)
+
+[node name="Control" type="CanvasLayer"]
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_3drft")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="Ui" type="Sprite2D" parent="Control"]
+position = Vector2(0, -14)
+scale = Vector2(1.5, 1.25)
+texture = ExtResource("2_ykksq")
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="Button" parent="AspectRatioContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+theme_override_colors/font_hover_color = Color(1, 0.792157, 0.792157, 1)
+theme_override_fonts/font = ExtResource("3_or2g7")
+action_mode = 0
+text = "RESTART"
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+script = ExtResource("3_p6ccl")
+
+[node name="Sprite2D" type="Sprite2D" parent="AspectRatioContainer/HBoxContainer/VBoxContainer"]
+position = Vector2(21, 70)
+texture = ExtResource("4_h6s0r")
+
+[connection signal="pressed" from="AspectRatioContainer/HBoxContainer/VBoxContainer/Button" to="AspectRatioContainer/HBoxContainer/VBoxContainer/Button" method="_on_pressed"]
